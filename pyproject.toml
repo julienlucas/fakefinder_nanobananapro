@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "coursera-pytorch-deeplearning"
+version = "0.1.0"
+description = ""
+authors = ["julienlucas <contact@julienlucas.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.12,<3.15"
+torch = "^2.2.0"
+numpy = ">=1.26.0,<2.0.0"
+matplotlib = "^3.10.7"
+ipython = "^9.7.0"
+pandas = "^2.3.3"
+dlai-grader = "^2.1.0"
+torchvision = "^0.17.2"
+scikit-learn = "^1.7.2"
+requests = "^2.32.5"
+tqdm = "^4.67.1"
+directory-tree = "^1.0.0"
+fastai = "2.7.16"
+torchmetrics = "^1.8.2"
+optuna = "^4.6.0"
+ipywidgets = "^8.1.8"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
