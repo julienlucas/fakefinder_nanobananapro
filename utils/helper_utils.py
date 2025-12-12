@@ -5,6 +5,7 @@ from .data import (
 from .visualization import (
     display_images,
     display_train_images,
+    plot_training_metrics
 )
 from .training import (
     training_loop_with_best_model,

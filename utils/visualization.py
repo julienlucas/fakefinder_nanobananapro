@@ -3,6 +3,7 @@ import random
 import numpy as np
 import torch
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
 from PIL import Image, UnidentifiedImageError
 
 
@@ -79,7 +80,7 @@ def display_images(
             ax.set_title(title)
             ax.axis('off')
         plt.tight_layout()
-        plt.show()
+    plt.show()
 
 
 def display_train_images(dataset_path):
@@ -135,6 +136,49 @@ def display_train_images(dataset_path):
         except (UnidentifiedImageError, FileNotFoundError):
             ax.set_title(f"Erreur de chargement d'image\n{os.path.basename(img_path)}", color='red')
             ax.axis('off')
+
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_training_metrics(metrics):
+    """Trace les métriques d'entraînement et de validation."""
+    train_losses, train_accuracies, val_losses, val_accuracies = metrics
+
+    num_epochs = len(train_losses)
+    epochs = range(1, num_epochs + 1)
+
+    fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+
+    ax1 = axes[0]
+    ax1.plot(epochs, train_losses, color='#085c75', linewidth=2.5, marker='o', markersize=5, label='Perte d\'entraînement')
+    ax1.plot(epochs, val_losses, color='#fa5f64', linewidth=2.5, marker='o', markersize=5, label='Perte de validation')
+    ax1.set_title('Perte d\'entraînement & de validation', fontsize=14)
+    ax1.set_xlabel('Époque', fontsize=12)
+    ax1.set_ylabel('Perte', fontsize=12)
+    ax1.legend()
+    ax1.grid(True, linestyle='--', alpha=0.6)
+
+    ax2 = axes[1]
+    ax2.plot(epochs, train_accuracies, color='#085c75', linewidth=2.5, marker='o', markersize=5, label='Précision d\'entraînement')
+    ax2.plot(epochs, val_accuracies, color='#fa5f64', linewidth=2.5, marker='o', markersize=5, label='Précision de validation')
+    ax2.set_title('Précision d\'entraînement & de validation', fontsize=14)
+    ax2.set_xlabel('Époque', fontsize=12)
+    ax2.set_ylabel('Précision', fontsize=12)
+    ax2.legend()
+    ax2.grid(True, linestyle='--', alpha=0.6)
+
+    x_interval = max(1, (num_epochs - 1) // 10 + 1)
+
+    for ax in axes:
+        ax.set_ylim(bottom=0)
+        if num_epochs > 1:
+            ax.set_xlim(left=1, right=num_epochs)
+            ax.xaxis.set_major_locator(mticker.MultipleLocator(x_interval))
+        else:
+            ax.set_xlim(left=0.5, right=1.5)
+            ax.set_xticks([1])
+        ax.tick_params(axis='both', which='major', labelsize=10)
 
     plt.tight_layout()
     plt.show()

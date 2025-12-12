@@ -4,7 +4,7 @@ import torchmetrics
 from tqdm.auto import tqdm
 
 
-def training_loop_with_best_model(model, train_loader, val_loader, loss_fcn, optmzr, device, num_epochs=3):
+def training_loop_with_best_model(model, train_loader, val_loader, loss_fcn, optmzr, device, num_epochs=3, scheduler=None):
     """
     Exécute la boucle d'entraînement et de validation pour un modèle PyTorch donné.
     Sauvegarde et retourne le modèle avec la meilleure précision de validation.
@@ -22,9 +22,9 @@ def training_loop_with_best_model(model, train_loader, val_loader, loss_fcn, opt
         L'objet modèle entraîné avec les poids qui ont atteint la meilleure précision de validation.
     """
     # Crée le répertoire pour sauvegarder le meilleur modèle s'il n'existe pas.
-    save_dir = "./best_model_saved/"
+    save_dir = "./"
     os.makedirs(save_dir, exist_ok=True)
-    best_model_path = os.path.join(save_dir, "best_model.pth")
+    best_model_path = os.path.join(save_dir, "best_model_nanobanana.pth")
 
     # Déplace le modèle vers le périphérique de calcul spécifié.
     model.to(device)
@@ -45,6 +45,12 @@ def training_loop_with_best_model(model, train_loader, val_loader, loss_fcn, opt
     best_val_accuracy = 0.0
     best_val_precision = 0.0
     best_val_recall = 0.0
+
+    # Liste pour stocker les métriques par époque
+    train_losses = []
+    train_accuracies = []
+    val_losses = []
+    val_accuracies = []
 
     # Commence la boucle principale d'entraînement et de validation pour un nombre d'époques.
     for epoch in range(num_epochs):
@@ -135,10 +141,21 @@ def training_loop_with_best_model(model, train_loader, val_loader, loss_fcn, opt
         # Calcule la perte de validation moyenne pour l'époque.
         avg_val_loss = val_loss / total_val_samples
 
+        # Calcule la perte d'entraînement moyenne pour l'époque.
+        avg_train_loss = running_loss / total_train_samples
+        # Calcule la précision d'entraînement pour l'époque.
+        train_acc = total_train_correct / total_train_samples
+
         # Calcule les valeurs de métriques finales pour l'époque entière.
         final_val_acc = val_accuracy_metric.compute()
         final_val_precision = val_precision_metric.compute()
         final_val_recall = val_recall_metric.compute()
+
+        # Stocke les métriques pour cette époque
+        train_losses.append(avg_train_loss)
+        train_accuracies.append(train_acc)
+        val_losses.append(avg_val_loss)
+        val_accuracies.append(final_val_acc.item())
 
         # Affiche un résumé des résultats de validation pour l'époque.
         print(f'Perte Val (Moy): {avg_val_loss:.4f}, Précision Val: {final_val_acc * 100:.2f}%\n')
@@ -151,6 +168,10 @@ def training_loop_with_best_model(model, train_loader, val_loader, loss_fcn, opt
             torch.save(model.state_dict(), best_model_path)
             print(f"Nouveau meilleur modèle sauvegardé dans {best_model_path} avec Précision Val: {best_val_accuracy * 100:.2f}%\n")
 
+        # Met à jour le scheduler si fourni
+        if scheduler is not None:
+            scheduler.step()
+
     # Affiche un message indiquant la fin de l'entraînement.
     print("\nEntraînement terminé. Meilleur modèle entraîné retourné.")
     print(f"Meilleure Exactitude Val: {best_val_accuracy * 100:.2f}%")
@@ -160,5 +181,6 @@ def training_loop_with_best_model(model, train_loader, val_loader, loss_fcn, opt
     # Charge les poids du meilleur modèle avant de le retourner.
     model.load_state_dict(torch.load(best_model_path))
 
-    # Retourne le meilleur modèle entraîné.
-    return model
+    # Retourne le meilleur modèle entraîné et les métriques.
+    metrics = (train_losses, train_accuracies, val_losses, val_accuracies)
+    return model, metrics
