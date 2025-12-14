@@ -46,8 +46,6 @@ def draw_bboxes(image_tensor_u8, boxes, labels, bbox_colors, bbox_width=6, font_
     FONT_CANDIDATES = [
         "DejaVuSans.ttf",
         "/System/Library/Fonts/Supplemental/Arial.ttf",
-        "/System/Library/Fonts/Supplemental/Verdana.ttf",
-        "/System/Library/Fonts/Supplemental/Tahoma.ttf",
         "/Library/Fonts/Arial.ttf",
     ]
 
@@ -228,7 +226,7 @@ def predict_and_draw_gradcam_bbox(model, image_path, device, class_names=None, k
 
 
 model_path = "./models/best_model_nanobanana_pro.pth"
-image_path = './images/fake/45180048-3fd8-441f-874f-c8a9b56b5b02_min.webp'
+image_path = './images/fake/jensen-huang-google-nano-banana.jpg'
 
 trained_model = load_mobilenetv3_model(model_path, num_classes=2)
 trained_model = trained_model.to(DEVICE)

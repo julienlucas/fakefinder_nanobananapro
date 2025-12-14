@@ -44,38 +44,6 @@ Ce projet repose entièrement sur une stratégie de **transfer learning** en cas
 - **Classes** : 2 (Real / Fake)
 - **Résolution d'entrée** : 224x224
 
-## 📁 Structure du Projet
-
-```
-fake_image_finder/
-├── AIvsReal_midjourney_dalle_sd/ # Dataset initial (SD, Midjourney, DALL-E)
-│   ├── train/
-│   │   ├── fake/
-│   │   └── real/
-│   └── test/
-│       ├── fake/
-│       └── real/
-├── AIvsReal_nanobanana_pro/   # Dataset Nano Banana Pro
-│   ├── train/
-│   │   ├── fake/              # 2250 images
-│   │   └── real/
-│   └── test/
-│       ├── fake/              # 500 images
-│       └── real/
-├── train_finetune_midjourney_dalle_sd.py # Entraînement initial
-├── train_finetune_nanobananapro.py  # Fine-tuning Nano Banana Pro
-├── inference.py                # Inférence avec Grad-CAM
-├── inference_check_test_dataset.py  # Évaluation complète du test dataset
-├── models/
-│   ├── best_model_midjourney_dalle_sd.pth # Modèle initial (SD/Midjourney/DALL-E)
-│   ├── best_model_nanobanana.pth   # Modèle fine-tuné Nano Banana Pro
-│   └── mobilenet_v3_large-8738ca79.pth  # Modèle pré-entraîné ImageNet
-└── utils/
-    ├── training.py             # Boucle d'entraînement
-    ├── helper_utils.py         # Utilitaires
-    └── visualization.py        # Visualisation Grad-CAM
-```
-
 ## 🚀 Utilisation
 
 ### Installation
@@ -85,12 +53,26 @@ fake_image_finder/
 uv sync
 ```
 
+### Téléchargement des Datasets
+
+Après l'installation, téléchargez les deux datasets depuis Hugging Face :
+
+```bash
+# Dataset Midjourney, DALL-E, Stable Diffusion
+uv run python download_dataset_images.py julienlucas/midjourney-dalle-sd-dataset ./AIvsReal_midjourney_dalle_sd
+
+# Dataset Nano Banana Pro
+uv run python download_dataset_images.py julienlucas/nanobanana-pro-dataset ./AIvsReal_nanobanana_pro
+```
+
+Le script `download_dataset_images.py` télécharge automatiquement les fichiers Parquet depuis Hugging Face, extrait les images dans la structure `train/real`, `train/fake`, `test/real`, `test/fake`, puis nettoie les fichiers temporaires.
+
 ### Entraînement
 
 #### 1. Transfer Learning initial (SD, Midjourney, DALL-E)
 
 ```bash
-python train.py
+uv run python finetune_midjourney_dalle_sd.py
 ```
 
 **Transfer learning** depuis ImageNet vers la détection générale d'images fake.
@@ -99,7 +81,7 @@ Génère `models/best_model_midjourney_dalle_sd.pth` - modèle de base pour dét
 #### 2. Transfer Learning vers Nano Banana Pro
 
 ```bash
-python train_finetune_nanobananapro.py
+uv run python finetune_nanobananapro.py
 ```
 
 **Transfer learning** depuis le modèle SD/Midjourney/DALL-E vers Nano Banana Pro.
@@ -116,7 +98,7 @@ Génère `models/best_model_nanobanana_pro.pth` - modèle adapté pour Nano Bana
 #### Inférence simple avec visualisation Grad-CAM
 
 ```bash
-python inference.py
+uv run python inference.py
 ```
 
 Affiche la prédiction et les régions importantes de l'image.
@@ -124,7 +106,7 @@ Affiche la prédiction et les régions importantes de l'image.
 #### Évaluation complète du dataset de test
 
 ```bash
-python inference_check_fulldataset.py
+uv run python inference_check_test_dataset.py
 ```
 
 Teste toutes les images du dataset `test/real` et `test/fake` et affiche :

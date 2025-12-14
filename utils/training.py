@@ -4,7 +4,7 @@ import torchmetrics
 from tqdm.auto import tqdm
 
 
-def training_loop_with_best_model(model, train_loader, val_loader, loss_fcn, optmzr, device, num_epochs=3, scheduler=None):
+def training_loop_with_best_model(model, train_loader, val_loader, loss_fcn, optmzr, device, num_epochs=3, scheduler=None, model_name="best_model_nanobanana_pro.pth"):
     """
     Exécute la boucle d'entraînement et de validation pour un modèle PyTorch donné.
     Sauvegarde et retourne le modèle avec la meilleure précision de validation.
@@ -17,6 +17,7 @@ def training_loop_with_best_model(model, train_loader, val_loader, loss_fcn, opt
         optmzr: L'optimiseur pour mettre à jour les paramètres du modèle.
         device: Le périphérique (CPU ou CUDA) sur lequel le modèle et les données seront traités.
         num_epochs: Le nombre total d'époques pour l'entraînement.
+        model_name: Le nom du fichier pour sauvegarder le meilleur modèle.
 
     Returns:
         L'objet modèle entraîné avec les poids qui ont atteint la meilleure précision de validation.
@@ -24,7 +25,7 @@ def training_loop_with_best_model(model, train_loader, val_loader, loss_fcn, opt
     # Crée le répertoire pour sauvegarder le meilleur modèle s'il n'existe pas.
     save_dir = "./models"
     os.makedirs(save_dir, exist_ok=True)
-    best_model_path = os.path.join(save_dir, "best_model_nanobanana_pro.pth")
+    best_model_path = os.path.join(save_dir, model_name)
 
     # Déplace le modèle vers le périphérique de calcul spécifié.
     model.to(device)
