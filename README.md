@@ -7,11 +7,11 @@ Détecteur d'images générées par IA utilisant **MobileNetV3 Large** finetuné
 
 *Note : les datasets d'images d'entrainement sont à télécharger sur HuggingFace 👇*
 
-![RAG Agentique multi-agent Header](./images/fake-1.png)
+![Fakefinder](./images/fake-1.png)
 
 ## 🎯 Concept Principal : Finetuning par Transfer Learning
 
-Ce projet utilise la technique du **transfer learning en changeant seulement la dernière couche - la couche classfieur**:
+Ce projet utilise la technique du **transfer learning** en changeant seulement la dernière couche - la couche classfieur**--:
 
 1. **ImageNet → Fake général** : Fine-tuning sur SD/Midjourney/DALL-E
 2. **Fake général → Nano Banana Pro** : Fine-tuning spécifique sur Nano Banana Pro
@@ -74,6 +74,8 @@ uv run python finetune_nanobananapro.py
 
 Génère `models/best_model_nanobanana_pro.pth`
 
+![Evals Header](./images/dataset.png)
+
 ## 🔍 Inférence
 
 ```bash
@@ -90,6 +92,9 @@ uv run python inference_check_test_dataset.py
 |---------|--------|----------|
 | Midjourney/DALL-E/SD | `best_model_midjourney_dalle_sd.pth` | 83.40% |
 | Nano Banana Pro (après fine-tuning) | `best_model_nanobanana_pro.pth` | 89.40% |
+
+
+![Evals Header](./images/evals.png)
 
 ## 📄 Licence
 
