@@ -226,7 +226,7 @@ def predict_and_draw_gradcam_bbox(model, image_path, device, class_names=None, k
 
 
 model_path = "./models/best_model_nanobanana_pro.pth"
-image_path = './images/fake/abc85fe7-a3c2-4374-931a-4bee66bd4d9d_min.webp'
+image_path = './images/real/GQ0924_TOC_05.jpg.webp.jpeg'
 
 trained_model = load_mobilenetv3_model(model_path, num_classes=2)
 trained_model = trained_model.to(DEVICE)

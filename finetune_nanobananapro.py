@@ -81,20 +81,9 @@ def create_data_loaders(trainset, valset, batch_size):
     return train_loader, val_loader, trainset, valset
 
 
-
-# Affiche les transformations composées pour vérifier la séquence des opérations
-# print("Transformations d'entraînement augmentées:\n")
-# print(combined_transformations[0])
-# print("\nTransformations de validation:\n")
-# print(combined_transformations[1])
 temp_train, temp_val = create_dataset_splits(dataset_path)
 dataloaders = create_data_loaders(temp_train, temp_val, batch_size=16)
-# print("--- DataLoader d'entraînement ---")
-# helper_utils.display_data_loader_contents(dataloaders[0])
-# print("\n--- DataLoader de validation ---")
-# helper_utils.display_data_loader_contents(dataloaders[1])
-
-helper_utils.display_images_from_dataloader(dataloaders[0], mean=IMAGENET_MEAN.tolist(), std=IMAGENET_STD.tolist())
+helper_utils.display_images_from_dataloader(dataloaders[0])
 
 
 def load_mobilenetv3_model(weights_path, num_classes=None):
@@ -116,8 +105,6 @@ def load_mobilenetv3_model(weights_path, num_classes=None):
 
 # 1. Charge le modèle pré-entraîné
 trained_model_path = "./models/best_model_midjourney_dalle_sd.pth"
-# model = tv_models.mobilenet_v3_large(weights=None)
-# print(model)
 trained_model = load_mobilenetv3_model(trained_model_path, num_classes=2)
 
 # 2. Gèle toutes les features, seul le classifier sera entraîné
@@ -140,8 +127,7 @@ new_train_loader, new_val_loader, _, __ = create_data_loaders(
 loss_fcn = nn.CrossEntropyLoss()
 
 # 5. Configure l'optimiseur (uniquement le classifier)
-optimizer = optim.Adam(trained_model.classifier.parameters(), lr=0.0005)
-
+optimizer = optim.Adam(trained_model.classifier.parameters(), lr=0.0001)
 
 # 6. Entraîne le modèle
 # continued_model, metrics = helper_utils.training_loop_with_best_model(
@@ -156,7 +142,7 @@ optimizer = optim.Adam(trained_model.classifier.parameters(), lr=0.0005)
 # )
 
 # 7. Trace les courbes de perte et précision
-# helper_utils.plot_training_metrics(metrics)
+helper_utils.plot_training_metrics(metrics)
 
 # 8. Sauvegarde les poids du modèle continué
 # torch.save(continued_model.state_dict(), './models/best_model_nanobanana_pro.pth')
