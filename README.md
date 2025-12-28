@@ -101,7 +101,7 @@ uv run python inference_check_test_dataset.py
 | Dataset | Modèle | Accuracy |
 |---------|--------|----------|
 | Midjourney/DALL-E/SD | `best_model_midjourney_dalle_sd.pth` | 83.40% |
-| Nano Banana Pro (après fine-tuning) | `best_model_nanobanana_pro.pth` | 89.40% |
+| Nano Banana Pro (après fine-tuning) | `best_model_nanobanana_pro.pth` | 87.10% |
 
 
 ![Evals Header](./images/evals.png)
